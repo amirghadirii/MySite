@@ -1,0 +1,46 @@
+{% load static %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Email</title>
+
+
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+</head>
+<body>
+
+<div class="login-wrapper">
+    <div class="login-card">
+
+        <h2 class="title">Email Addresses</h2>
+        <p class="subtitle">The following email addresses are associated with your account:</p>
+        
+
+       {{ form.errors }}
+
+        <form method="post">
+            {% csrf_token %}
+            {{ form.email }}
+            <button type="submit" name="action_add">Add Email</button>
+        </form>
+
+
+        <hr>
+
+        {% for email in user.emailaddress_set.all %}
+            {{ email.email }} |
+            verified={{ email.verified }} |
+            primary={{ email.primary }}
+            <br>
+        {% endfor %}
+
+    </div>
+</div>
+
+
+<script src="{% static 'js/login.js' %}"></script>
+</body>
+</html>
+
+

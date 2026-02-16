@@ -7,7 +7,7 @@
     <!-- Favicon -->
     <link rel="shortcut icon" href="{% static 'img/fav.png' %}" />
     <!-- Author Meta -->
-    <meta name="author" content="colorlib" />
+    <meta name="{{post.author}}" content="colorlib" />
     <!-- Meta Description -->
     <meta name="description" content="" />
     <!-- Meta Keyword -->
@@ -38,12 +38,13 @@
           <div class="row align-items-center">
             <div class="col-lg-6 col-sm-6 col-6 header-top-left">
               <ul>
-                <li>
-                  <a href="#">Visit Us</a>
-                </li>
-                <li>
-                  <a href="#">Buy Tickets</a>
-                </li>
+				{% if request.user.is_authenticated %}
+                <li><a href="#">Logged as {{request.user.username}}</a></li>
+				<li><a href="{% url 'account_logout' %}">Logout</a></li>
+				{% else %}
+				<li><a href="{% url 'account_login' %}">Sign in</a></li>
+                <li><a href="{% url 'account_signup' %}">Sign up</a></li>
+				{% endif %}
               </ul>
             </div>
             <div class="col-lg-6 col-sm-6 col-6 header-top-right">
@@ -64,42 +65,9 @@
           </div>
           <nav id="nav-menu-container">
             <ul class="nav-menu">
-              <li>
-                <a href="{% url 'website:index' %}">Home</a>
-              </li>
-              <li>
-                <a href="{% url 'website:about' %}">About</a>
-              </li>
-              <li class="menu-has-children">
-                <a href="">Blog</a>
-                <ul>
-                  <li>
-                    <a href="{% url 'blog:index' %}">Blog Home</a>
-                  </li>
-                  <li>
-                    <a href="{% url 'blog:single' %}">Blog Single</a>
-                  </li>
-                </ul>
-              </li>
-              <li class="menu-has-children">
-                <a href="">Pages</a>
-                <ul>
-                  <li>
-                    <a href="elements.html">Elements</a>
-                  </li>
-                  <li class="menu-has-children">
-                    <a href="">Level 2</a>
-                    <ul>
-                      <li>
-                        <a href="#">Item One</a>
-                      </li>
-                      <li>
-                        <a href="#">Item Two</a>
-                      </li>
-                    </ul>
-                  </li>
-                </ul>
-              </li>
+              <li><a href="{% url 'website:index' %}">Home</a></li>
+              <li><a href="{% url 'website:about' %}">About</a></li>
+              <li class="menu-has-children"><a href="{% url 'blog:index' %}">Blog</a></li>
               <li>
                 <a href="{% url 'website:contact' %}">Contact</a>
               </li>
@@ -114,6 +82,21 @@
     {% block content %}
 
     {% endblock %}
+
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+	{% if messages %}
+	<script>
+		{% for message in messages %}
+			Swal.fire({
+				icon: '{{ message.tags }}', // success / error / info
+				text: '{{ message }}',
+				timer: 3000,
+				showConfirmButton: false
+			});
+		{% endfor %}
+	</script>
+	{% endif %}
 
     <!-- start footer Area -->		
 			<footer class="footer-area section-gap">
@@ -157,11 +140,12 @@
 								<p>
 									For business professionals caught between high OEM price and mediocre print and graphic output.									
 								</p>								
-								<div id="mc_embed_signup">
-									<form target="_blank" action="https://spondonit.us12.list-manage.com/subscribe/post?u=1462626880ade1ac87bd9c93a&amp;id=92a4423d01" method="get" class="subscription relative">
+								<div>
+									<form  action="{% url 'website:newsletter' %}" method="post" class="subscription relative">
+										{% csrf_token %}
 										<div class="input-group d-flex flex-row">
-											<input name="EMAIL" placeholder="Email Address" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Email Address '" required="" type="email">
-											<button class="btn bb-btn"><span class="lnr lnr-location"></span></button>		
+											<input name="email" placeholder="Email Address" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Email Address '" required="" type="email">
+											<button class="btn bb-btn" type="submit"><span class="lnr lnr-location"></span></button>		
 										</div>									
 										<div class="mt-10 info"></div>
 									</form>

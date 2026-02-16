@@ -1,0 +1,65 @@
+{% load static %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SIGN IN</title>
+
+
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+</head>
+<body>
+
+<div class="login-wrapper">
+    <div class="login-card">
+
+        <h2 class="title">Welcome Back</h2>
+        <p class="subtitle">Sign in to your account</p>
+        <form method="post" action="{% url 'account_login' %}">
+            {% csrf_token %}
+
+            <div class="input-group-custom">
+                <input type="text" name="login" required>
+                <label>Username Or Email</label>
+            </div>
+
+            <div class="input-group-custom password-group">
+                <input type="password" name="password" id="password" required>
+                <label>Password</label>
+                <span class="toggle-password" onclick="togglePassword('password')">👁</span>
+            </div>
+
+            <div class="options">
+                <label>
+                    <input type="checkbox" name="remember">
+                    Remember me
+                </label>
+                <a href="{% url 'account_reset_password' %}" class="forgot">Forgot password?</a>
+            </div>
+
+            <button type="submit" class="login-btn">Login</button>
+            {% if form.errors %}
+            <div class="alert alert-danger">
+              <ul>
+                {% for field in form %}
+                  {% for error in field.errors %}
+                    <li>{{ field.label }}: {{ error }}</li>
+                  {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                  <li>{{ error }}</li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+        </form>
+
+    </div>
+</div>
+
+
+<script src="{% static 'js/login.js' %}"></script>
+</body>
+</html>
+
+
